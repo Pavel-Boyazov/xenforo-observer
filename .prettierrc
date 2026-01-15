@@ -1,0 +1,9 @@
+{
+	"printWidth": 120,
+	"trailingComma": "all",
+	"endOfLine": "lf",
+	"useTabs": true,
+	"tabWidth": 2,
+	"bracketSpacing": true,
+	"quoteProps": "consistent"
+}

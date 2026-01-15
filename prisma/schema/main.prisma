@@ -1,0 +1,16 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model IdData {
+  id           Int @id @default(0)
+  lastThreadId Int @default(0) @map("last_thread_id")
+  lastPostId   Int @default(0) @map("last_post_id")
+
+  @@map("id_data")
+}

@@ -1,0 +1,21 @@
+model ActionLog {
+  id Int @id @default(autoincrement())
+
+  guildId        String        @db.VarChar(20)
+  executorId     String        @db.VarChar(20)
+  type           ActionType
+  subscriptionId Int?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  linkType       LinkType?     @map("link_type")
+  linkId         Int?          @map("link_id")
+  link           ObservedLink? @relation(fields: [linkType, linkId], references: [type, id])
+
+  timestamp DateTime @default(now())
+
+  @@map("action_logs")
+}
+
+enum ActionType {
+  CREATE
+  DELETE
+}

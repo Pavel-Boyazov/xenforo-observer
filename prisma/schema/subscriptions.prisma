@@ -1,0 +1,42 @@
+model ObservedLink {
+  type LinkType
+  id   Int
+
+  lastPage Int? @map("last_page")
+
+  subscriptions Subscription[]
+  logs          ActionLog[]
+
+  @@id([type, id])
+  @@map("observed_links")
+}
+
+enum LinkType {
+  THREAD
+  FORUM
+}
+
+model Subscription {
+  id Int @id @default(autoincrement())
+
+  targetId  String       @map("target_id") @db.VarChar(20)
+  linkType  LinkType     @map("link_type")
+  linkId    Int          @map("link_id")
+  link      ObservedLink @relation(fields: [linkType, linkId], references: [type, id], onDelete: Cascade)
+  createdAt DateTime     @default(now()) @map("created_at")
+
+  guildId String? @map("guild_id") @db.VarChar(20)
+
+  filterPrefixesIds Json? @map("filter_prefixes_ids")
+  filterPostId      Int?  @map("filter_post_id")
+
+  moderatorRolesIds  Json?   @map("moderator_roles_ids")
+  defaultText        String? @map("default_text")
+  defaultPrefixesIds Json?   @map("default_prefixes_ids")
+  defaultActions     Json?   @map("default_actions")
+
+  logs ActionLog[]
+
+  @@unique([targetId, linkType, linkId])
+  @@map("subscriptions")
+}
