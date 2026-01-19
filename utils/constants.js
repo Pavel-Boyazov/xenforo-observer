@@ -8,12 +8,12 @@ const adapter = new PrismaMariaDb(process.env.DATABASE_URL);
 module.exports = {
 	prisma: new PrismaClient({ adapter }),
 	apiInstance: axios.create({
-		baseURL: "https://forum.arzguard.com/api/",
+		baseURL: `https://${process.env.FORUM_HOSTNAME}/api/`,
 		headers: {
-			"XF-Api-Key": process.env.FORUM_API,
+			"XF-Api-Key": process.env.FORUM_API_TOKEN,
 		},
 	}),
-	rssInstance: axios.create({ baseURL: "https://forum.arzguard.com/" }),
+	rssInstance: axios.create({ baseURL: `https://${process.env.FORUM_HOSTNAME}/` }),
 	urlRegex: /\/(?<type>forums|threads)\/(?<id>\d+)\/?(?:page-\d+)?(?:#post-)?(?<post_id>\d+)?/,
 	botColors: {
 		green: 0x85ea8a,

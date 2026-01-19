@@ -38,8 +38,8 @@ module.exports = new Autocomplete({
 					}
 
 					return {
-						name: `https://forum.arzguard.com${path}${title ? ` (${title})` : ""}`,
-						value: `https://forum.arzguard.com${path}`,
+						name: `https://${process.env.FORUM_HOSTNAME}${path}${title ? ` (${title})` : ""}`,
+						value: `https://${process.env.FORUM_HOSTNAME}${path}`,
 					};
 				}),
 			),

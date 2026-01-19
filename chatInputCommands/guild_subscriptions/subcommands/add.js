@@ -77,9 +77,9 @@ module.exports = new Subcommand({
 			return interaction.reply({ content: "При чтении ссылки произошла ошибка", flags: MessageFlags.Ephemeral });
 		}
 
-		if (url.host !== "forum.arzguard.com")
+		if (url.host !== process.env.FORUM_HOSTNAME)
 			return interaction.reply({
-				content: "Бот поддерживает только https://forum.arzguard.com/",
+				content: `Бот поддерживает только https://${process.env.FORUM_HOSTNAME}/`,
 				flags: MessageFlags.Ephemeral,
 			});
 

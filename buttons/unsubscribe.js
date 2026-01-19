@@ -62,7 +62,7 @@ module.exports = new Button({
 			if (error.status !== 403 && error.status !== 404) console.error(error);
 		}
 
-		const url = `https://forum.arzguard.com${path}`;
+		const url = `https://${process.env.FORUM_HOSTNAME}${path}`;
 
 		return interaction.reply({
 			content: `Вы отписались от обновлений ${typeString} ` + bold(title ? hyperlink(title, url) : url),
