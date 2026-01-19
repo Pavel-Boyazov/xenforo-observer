@@ -120,11 +120,10 @@ module.exports = new Subcommand({
 					title = data.forum.title;
 					prefixes = data.forum.type_data.prefixes;
 				});
-			else if (type === $Enums.LinkType.THREAD)
+			else
 				await apiInstance.get(`/threads/${id}`).then(({ data }) => {
 					title = data.thread.title;
 				});
-			else title = id;
 		} catch (error) {
 			if (error.status === 403)
 				return interaction.reply({
