@@ -45,8 +45,7 @@ module.exports.config = {
 
 module.exports.lastIds = {
 	get: () => prisma.idData.findFirst(),
-	/**
-	 * @param {Prisma.IdDataCreateInput} data Новые данные
-	 */
-	update: (data) => prisma.idData.upsert({ where: { id: 0 }, update: data, create: data }),
+	create: () => prisma.idData.upsert({ where: { id: 0 }, update: {}, create: { id: 0 } }),
+	/** @param {Prisma.IdDataUpdateInput} data Новые данные */
+	update: (data) => prisma.idData.update({ where: { id: 0 }, data }),
 };

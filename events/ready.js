@@ -1,6 +1,7 @@
 const { Events } = require("discord.js");
 
 const Event = require("../classes/Event");
+const { lastIds } = require("../mfunc");
 const { loadCommands } = require("../utils");
 
 module.exports = new Event({
@@ -9,11 +10,13 @@ module.exports = new Event({
 	listener(bot, botInfo) {
 		console.log(`Приложение было авторизовано как: «${bot.user.tag}».`);
 
-		botInfo.schedules.forEach((schedule) => {
-			schedule.context.client = bot;
-			schedule.context.botInfo = botInfo;
-			schedule.start();
-		});
+		lastIds.create().then(() =>
+			botInfo.schedules.forEach((schedule) => {
+				schedule.context.client = bot;
+				schedule.context.botInfo = botInfo;
+				schedule.start();
+			}),
+		);
 
 		bot.application.emojis
 			.fetch()
