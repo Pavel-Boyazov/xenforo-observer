@@ -77,11 +77,13 @@ module.exports = new Button({
 						description: "Префикс, который будет установлен после ответа",
 						component: new StringSelectMenuBuilder({
 							customId: "prefixes",
-							options: prefixes.map((prefix) => ({
-								label: prefix.title,
-								value: prefix.prefix_id.toString(),
-								default: subscription.defaultPrefixesIds?.includes(prefix.prefix_id),
-							})),
+							options: prefixes
+								.map((prefix) => ({
+									label: prefix.title,
+									value: prefix.prefix_id.toString(),
+									default: subscription.defaultPrefixesIds?.includes(prefix.prefix_id),
+								}))
+								.slice(0, 25),
 							minValues: 0,
 							// MaxValues: prefixes.length,
 							required: false,

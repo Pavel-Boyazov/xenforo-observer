@@ -153,7 +153,9 @@ module.exports = new Subcommand({
 											customId: `filterPrefixes:${entry.id}`,
 											minValues: 0,
 											// MaxValues: prefixes.length,
-											options: prefixes.map((prefix) => ({ label: prefix.title, value: prefix.prefix_id.toString() })),
+											options: prefixes
+												.map((prefix) => ({ label: prefix.title, value: prefix.prefix_id.toString() }))
+												.slice(0, 25),
 											placeholder: "Отображать только с префиксами",
 										}),
 									),

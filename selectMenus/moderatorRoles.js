@@ -84,7 +84,9 @@ module.exports = new SelectMenu({
 						component: new StringSelectMenuBuilder({
 							customId: "prefixes",
 							placeholder: "Префиксы по умолчанию",
-							options: prefixes.map((prefix) => ({ label: prefix.title, value: prefix.prefix_id.toString() })),
+							options: prefixes
+								.map((prefix) => ({ label: prefix.title, value: prefix.prefix_id.toString() }))
+								.slice(0, 25),
 							minValues: 0,
 							// MaxValues: prefixes.length,
 							required: false,
