@@ -25,6 +25,12 @@ module.exports = {
 	 * @param {Prisma.ObservedLinkWhereInput} where Фильтр ссылок
 	 */
 	getLinks: (where) => prisma.observedLink.findMany({ where, include: { subscriptions: true } }),
+	/**
+	 * @param {Snowflake} guildId Discord ID сервера
+	 * @param {number} forumId ID форума для проверки
+	 */
+	checkAccess: (guildId, forumId) =>
+		prisma.accessOverwrite.findUnique({ where: { guildId, allowedForumsIds: { array_contains: forumId } } }),
 };
 
 module.exports.lastIds = {

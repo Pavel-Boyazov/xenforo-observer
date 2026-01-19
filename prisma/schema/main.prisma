@@ -14,3 +14,10 @@ model IdData {
 
   @@map("id_data")
 }
+
+model AccessOverwrite {
+  guildId          String         @id @map("guild_id") @db.VarChar(20)
+  allowedForumsIds Json           @map("allowed_forums_ids")
+
+  @@map("access_overwrites")
+}

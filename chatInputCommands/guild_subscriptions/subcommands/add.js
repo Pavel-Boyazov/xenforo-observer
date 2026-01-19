@@ -17,7 +17,7 @@ const {
 } = require("discord.js");
 
 const Subcommand = require("../../../classes/Subcommand");
-const { subscribe } = require("../../../mfunc");
+const { subscribe, checkAccess } = require("../../../mfunc");
 const { $Enums } = require("../../../prisma/generated");
 const { rssInstance, apiInstance, urlRegex } = require("../../../utils");
 
@@ -89,6 +89,8 @@ module.exports = new Subcommand({
 		if (urlType === "forums") type = $Enums.LinkType.FORUM;
 		else type = $Enums.LinkType.THREAD;
 
+		let isProtected = false;
+
 		try {
 			let path;
 
@@ -97,22 +99,20 @@ module.exports = new Subcommand({
 
 			await rssInstance.get(path);
 		} catch (error) {
-			if (error.status === 403)
+			if (error.status === 403) isProtected = true;
+			else {
+				console.error(error);
+
 				return interaction.reply({
-					content: "Данная ссылка находится под защитой, вы не можете подписаться на её обновления",
+					content: "При проверке прав доступа произошла неизвестная ошибка. Повторите попытку позже",
 					flags: MessageFlags.Ephemeral,
 				});
-
-			console.error(error);
-
-			return interaction.reply({
-				content: "При проверке прав доступа произошла неизвестная ошибка. Повторите попытку позже",
-				flags: MessageFlags.Ephemeral,
-			});
+			}
 		}
 
 		let title;
 		let prefixes;
+		let forumId = type === $Enums.LinkType.FORUM ? id : undefined;
 
 		try {
 			if (type === $Enums.LinkType.FORUM)
@@ -123,6 +123,7 @@ module.exports = new Subcommand({
 			else
 				await apiInstance.get(`/threads/${id}`).then(({ data }) => {
 					title = data.thread.title;
+					forumId = data.thread.node_id;
 				});
 		} catch (error) {
 			if (error.status === 403)
@@ -143,6 +144,24 @@ module.exports = new Subcommand({
 				flags: MessageFlags.Ephemeral,
 			});
 		}
+
+		if (isProtected)
+			try {
+				await checkAccess(interaction.guildId, forumId);
+			} catch (error) {
+				if (error instanceof PrismaClientKnownRequestError && error.code === "P2025")
+					return interaction.reply({
+						content: "Данная ссылка находится под защитой, вы не можете подписаться на её обновления",
+						flags: MessageFlags.Ephemeral,
+					});
+
+				console.error(error);
+
+				return interaction.reply({
+					content: "При проверке доступа произошла неизвестная ошибка. Повторите попытку позже",
+					flags: MessageFlags.Ephemeral,
+				});
+			}
 
 		/** @type {GuildTextBasedChannel} */
 		const channel = interaction.options.getChannel("канал") ?? interaction.channel;
