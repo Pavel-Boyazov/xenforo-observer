@@ -150,7 +150,6 @@ module.exports = new Subcommand({
 
 		return subscribe({
 			targetId: channel.id,
-			channelId: channel.isThread() ? channel.parentId : undefined,
 			guildId: interaction.guildId,
 			link: { connectOrCreate: { where: linkUnique, create: { type, id: +id } } },
 			filterPostId: postId,
