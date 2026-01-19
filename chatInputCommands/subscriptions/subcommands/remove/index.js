@@ -106,7 +106,7 @@ module.exports = new Subcommand({
 			.catch((err) => {
 				if (err instanceof PrismaClientKnownRequestError && err.code === "P2025")
 					return interaction.reply({
-						content: "Данная подписка уже отсутсвует, вам не будут присылаться обновления",
+						content: "Данная подписка уже отсутствует, вам не будут присылаться обновления",
 						flags: MessageFlags.Ephemeral,
 					});
 
