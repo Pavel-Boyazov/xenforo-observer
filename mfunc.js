@@ -27,22 +27,6 @@ module.exports = {
 	getLinks: (where) => prisma.observedLink.findMany({ where, include: { subscriptions: true } }),
 };
 
-module.exports.config = {
-	/** Получить конфиги всех серверов
-	 * @template {Prisma.MainConfigDefaultArgs} MainConfigArgs
-	 * @param {MainConfigArgs?} args Аргументы для получения
-	 * @returns {Prisma.PrismaPromise<Prisma.MainConfigGetPayload<MainConfigArgs>[]>} Конфиги серверов
-	 */
-	getServers: (args) => prisma.mainConfig.findMany({ ...args }),
-	/** Получить конфигурацию
-	 * @template {Prisma.MainConfigDefaultArgs} MainConfigArgs
-	 * @param {Snowflake} guildId Discord ID сервера
-	 * @param {MainConfigArgs?} args Аргументы для получения
-	 * @returns {Promise<Prisma.MainConfigGetPayload<MainConfigArgs>>} Настройки сервера
-	 */
-	getConfig: (guildId, args) => prisma.mainConfig.findUnique({ where: { guildId }, ...args }),
-};
-
 module.exports.lastIds = {
 	get: () => prisma.idData.findFirst(),
 	create: () => prisma.idData.upsert({ where: { id: 0 }, update: {}, create: { id: 0 } }),
