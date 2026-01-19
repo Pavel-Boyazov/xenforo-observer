@@ -10,7 +10,7 @@ const {
 } = require("discord.js");
 
 const Button = require("../classes/Button");
-const { get } = require("../mfunc");
+const { subscriptions } = require("../mfunc");
 const { $Enums } = require("../prisma/generated");
 const { apiInstance, botColors } = require("../utils");
 
@@ -18,7 +18,7 @@ module.exports = new Button({
 	customId: "moderate",
 	customIdPayload: { subscriptionId: "number", newId: "number" },
 	async execute(interaction, { subscriptionId, newId }) {
-		const subscription = await get(subscriptionId).catch(console.error);
+		const subscription = await subscriptions.get(subscriptionId).catch(console.error);
 
 		if (subscription === null)
 			return interaction.reply({

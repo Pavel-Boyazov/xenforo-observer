@@ -9,7 +9,7 @@ const {
 } = require("discord.js");
 
 const SelectMenu = require("../classes/SelectMenu");
-const { update } = require("../mfunc");
+const { subscriptions } = require("../mfunc");
 const { $Enums } = require("../prisma/generated");
 const { apiInstance } = require("../utils");
 
@@ -21,7 +21,7 @@ module.exports = new SelectMenu({
 		let linkType, linkId;
 
 		try {
-			({ linkType, linkId } = await update(subscriptionId, { moderatorRolesIds: interaction.values }));
+			({ linkType, linkId } = await subscriptions.update(subscriptionId, { moderatorRolesIds: interaction.values }));
 		} catch (err) {
 			if (err instanceof PrismaClientKnownRequestError && err.code === "P2025")
 				return interaction.reply({

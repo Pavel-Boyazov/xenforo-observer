@@ -17,7 +17,7 @@ const {
 } = require("discord.js");
 
 const Subcommand = require("../../../classes/Subcommand");
-const { subscribe, checkAccess } = require("../../../mfunc");
+const { checkAccess, subscriptions } = require("../../../mfunc");
 const { $Enums } = require("../../../prisma/generated");
 const { rssInstance, apiInstance, urlRegex } = require("../../../utils");
 
@@ -167,20 +167,21 @@ module.exports = new Subcommand({
 		const channel = interaction.options.getChannel("канал") ?? interaction.channel;
 		const linkUnique = { type_id: { type, id: +id } };
 
-		return subscribe({
-			targetId: channel.id,
-			guildId: interaction.guildId,
-			link: { connectOrCreate: { where: linkUnique, create: { type, id: +id } } },
-			filterPostId: postId,
-			logs: {
-				create: {
-					type: $Enums.ActionType.CREATE,
-					guildId: interaction.guildId,
-					executorId: interaction.user.id,
-					link: { connect: linkUnique },
+		return subscriptions
+			.create({
+				targetId: channel.id,
+				guildId: interaction.guildId,
+				link: { connectOrCreate: { where: linkUnique, create: { type, id: +id } } },
+				filterPostId: postId,
+				logs: {
+					create: {
+						type: $Enums.ActionType.CREATE,
+						guildId: interaction.guildId,
+						executorId: interaction.user.id,
+						link: { connect: linkUnique },
+					},
 				},
-			},
-		})
+			})
 			.then(({ id: entryId }) => {
 				let typeString;
 

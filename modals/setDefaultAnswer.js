@@ -2,7 +2,7 @@ const { PrismaClientKnownRequestError } = require("@prisma/client/runtime/client
 const { MessageFlags } = require("discord.js");
 
 const Modal = require("../classes/Modal");
-const { update } = require("../mfunc");
+const { subscriptions } = require("../mfunc");
 
 module.exports = new Modal({
 	customId: "setDefaultAnswer",
@@ -14,7 +14,7 @@ module.exports = new Modal({
 
 		if (defaultText || defaultPrefixesIds.length || defaultActions.length)
 			try {
-				await update(subscriptionId, { defaultText, defaultPrefixesIds, defaultActions });
+				await subscriptions.update(subscriptionId, { defaultText, defaultPrefixesIds, defaultActions });
 			} catch (err) {
 				if (err instanceof PrismaClientKnownRequestError && err.code === "P2025")
 					return interaction.reply({

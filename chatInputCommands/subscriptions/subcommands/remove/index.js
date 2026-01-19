@@ -6,7 +6,7 @@ const { PrismaClientKnownRequestError } = require("@prisma/client/runtime/client
 const { ApplicationCommandOptionType, MessageFlags, bold, hyperlink, Locale } = require("discord.js");
 
 const Subcommand = require("../../../../classes/Subcommand");
-const { unsubscribe } = require("../../../../mfunc");
+const { subscriptions } = require("../../../../mfunc");
 const { $Enums } = require("../../../../prisma/generated");
 const { urlRegex, apiInstance } = require("../../../../utils");
 
@@ -62,13 +62,14 @@ module.exports = new Subcommand({
 		if (urlType === "forums") linkType = $Enums.LinkType.FORUM;
 		else linkType = $Enums.LinkType.THREAD;
 
-		return unsubscribe({
-			targetId_linkType_linkId: {
-				targetId: interaction.user.id,
-				linkType: linkType,
-				linkId: postId ?? +id,
-			},
-		})
+		return subscriptions
+			.delete({
+				targetId_linkType_linkId: {
+					targetId: interaction.user.id,
+					linkType: linkType,
+					linkId: postId ?? +id,
+				},
+			})
 			.then(async () => {
 				let typeString;
 

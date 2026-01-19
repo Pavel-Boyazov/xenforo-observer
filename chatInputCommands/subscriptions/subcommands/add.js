@@ -12,7 +12,7 @@ const {
 } = require("discord.js");
 
 const Subcommand = require("../../../classes/Subcommand");
-const { subscribe } = require("../../../mfunc");
+const { subscriptions } = require("../../../mfunc");
 const { $Enums } = require("../../../prisma/generated");
 const { rssInstance, apiInstance, urlRegex } = require("../../../utils");
 
@@ -122,11 +122,12 @@ module.exports = new Subcommand({
 			});
 		}
 
-		return subscribe({
-			targetId: interaction.user.id,
-			link: { connectOrCreate: { where: { type_id: { type, id: +id } }, create: { type, id: +id } } },
-			filterPostId: postId,
-		})
+		return subscriptions
+			.create({
+				targetId: interaction.user.id,
+				link: { connectOrCreate: { where: { type_id: { type, id: +id } }, create: { type, id: +id } } },
+				filterPostId: postId,
+			})
 			.then((entry) => {
 				let typeString;
 

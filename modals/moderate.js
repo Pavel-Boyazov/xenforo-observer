@@ -2,7 +2,7 @@ const { AxiosError } = require("axios");
 const { MessageFlags, ContainerBuilder, ComponentType, subtext } = require("discord.js");
 
 const Modal = require("../classes/Modal");
-const { get } = require("../mfunc");
+const { subscriptions } = require("../mfunc");
 const { $Enums } = require("../prisma/generated");
 const { apiInstance, suppressHides, botColors } = require("../utils");
 
@@ -11,7 +11,7 @@ module.exports = new Modal({
 	customId: "moderate",
 	customIdPayload: { subscriptionId: "number", newId: "number" },
 	async execute(interaction, { subscriptionId, newId }) {
-		const subscription = await get(subscriptionId).catch(console.error);
+		const subscription = await subscriptions.get(subscriptionId).catch(console.error);
 
 		if (subscription === null)
 			return interaction.reply({

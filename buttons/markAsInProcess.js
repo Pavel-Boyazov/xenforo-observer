@@ -1,14 +1,14 @@
 const { ContainerBuilder, subtext, MessageFlags, ComponentType } = require("discord.js");
 
 const Button = require("../classes/Button");
-const { get } = require("../mfunc");
+const { subscriptions } = require("../mfunc");
 const { botColors } = require("../utils");
 
 module.exports = new Button({
 	customId: "markAsInProcess",
 	customIdPayload: { subscriptionId: "number" },
 	async execute(interaction, { subscriptionId }) {
-		const subscription = await get(subscriptionId).catch(console.error);
+		const subscription = await subscriptions.get(subscriptionId).catch(console.error);
 
 		if (subscription === null)
 			return interaction.reply({

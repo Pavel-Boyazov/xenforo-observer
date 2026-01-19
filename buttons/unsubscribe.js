@@ -2,7 +2,7 @@ const { PrismaClientKnownRequestError } = require("@prisma/client/runtime/client
 const { bold, hyperlink, MessageFlags } = require("discord.js");
 
 const Button = require("../classes/Button");
-const { unsubscribe } = require("../mfunc");
+const { subscriptions } = require("../mfunc");
 const { $Enums } = require("../prisma/generated");
 const { apiInstance } = require("../utils");
 
@@ -13,7 +13,7 @@ module.exports = new Button({
 		let linkType, linkId;
 
 		try {
-			({ linkType, linkId } = await unsubscribe({ id: subscriptionId }));
+			({ linkType, linkId } = await subscriptions.delete({ id: subscriptionId }));
 		} catch (err) {
 			if (err instanceof PrismaClientKnownRequestError && err.code === "P2025")
 				return interaction.reply({
