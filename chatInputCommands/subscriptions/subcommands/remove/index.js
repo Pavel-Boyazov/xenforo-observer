@@ -55,7 +55,7 @@ module.exports = new Subcommand({
 				flags: MessageFlags.Ephemeral,
 			});
 
-		const { type: urlType, id, post_id: postId } = url.pathname.match(urlRegex).groups;
+		const { type: urlType, id } = url.pathname.match(urlRegex).groups;
 		/** @type {LinkType} */
 		let linkType;
 
@@ -67,7 +67,7 @@ module.exports = new Subcommand({
 				targetId_linkType_linkId: {
 					targetId: interaction.user.id,
 					linkType: linkType,
-					linkId: postId ?? +id,
+					linkId: +id,
 				},
 			})
 			.then(async () => {
