@@ -7,13 +7,13 @@ const {
 	ApplicationCommandOptionType,
 	MessageFlags,
 	bold,
-	ChannelType,
 	hyperlink,
 	Locale,
 	ActionRowBuilder,
 	StringSelectMenuBuilder,
 	RoleSelectMenuBuilder,
 	TextDisplayBuilder,
+	channelMention,
 } = require("discord.js");
 
 const Subcommand = require("../../../classes/Subcommand");
@@ -40,24 +40,6 @@ module.exports = new Subcommand({
 				description: "Ссылка на форум/тему/сообщение для отслеживания",
 				required: true,
 				minLength: 31,
-			},
-			{
-				type: ApplicationCommandOptionType.Channel,
-				name: "канал",
-				nameLocalizations: {
-					[Locale.EnglishUS]: "channel",
-					[Locale.EnglishGB]: "channel",
-				},
-				description: "Канал, в который будут отправляться уведомления (текущий если не указано)",
-				channelTypes: [
-					ChannelType.GuildText,
-					ChannelType.GuildVoice,
-					ChannelType.PublicThread,
-					ChannelType.PrivateThread,
-					ChannelType.GuildStageVoice,
-					ChannelType.GuildAnnouncement,
-					ChannelType.AnnouncementThread,
-				],
 			},
 		],
 	},
@@ -163,13 +145,11 @@ module.exports = new Subcommand({
 				});
 			}
 
-		/** @type {GuildTextBasedChannel} */
-		const channel = interaction.options.getChannel("канал") ?? interaction.channel;
 		const linkUnique = { type_id: { type, id: +id } };
 
 		return subscriptions
 			.create({
-				targetId: channel.id,
+				targetId: interaction.channelId,
 				guildId: interaction.guildId,
 				link: { connectOrCreate: { where: linkUnique, create: { type, id: +id } } },
 				filterPostId: postId,
@@ -197,7 +177,8 @@ module.exports = new Subcommand({
 				const components = [
 					new TextDisplayBuilder({
 						content:
-							`Вы подписали канал ${channel} на обновления ${typeString} ` + bold(hyperlink(title, url.toString())),
+							`Вы подписали канал ${channelMention(interaction.channelId)} на обновления ${typeString} ` +
+							bold(hyperlink(title, url.toString())),
 					}),
 				];
 

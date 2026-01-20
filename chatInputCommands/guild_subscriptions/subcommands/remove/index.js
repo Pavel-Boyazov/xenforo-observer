@@ -3,15 +3,7 @@
  */
 
 const { PrismaClientKnownRequestError } = require("@prisma/client/runtime/client");
-const {
-	ApplicationCommandOptionType,
-	MessageFlags,
-	bold,
-	hyperlink,
-	Locale,
-	ChannelType,
-	channelMention,
-} = require("discord.js");
+const { ApplicationCommandOptionType, MessageFlags, bold, hyperlink, Locale, channelMention } = require("discord.js");
 
 const Subcommand = require("../../../../classes/Subcommand");
 const { subscriptions } = require("../../../../mfunc");
@@ -38,24 +30,6 @@ module.exports = new Subcommand({
 				autocomplete: true,
 				required: true,
 				minLength: 31,
-			},
-			{
-				type: ApplicationCommandOptionType.Channel,
-				name: "канал",
-				nameLocalizations: {
-					[Locale.EnglishUS]: "channel",
-					[Locale.EnglishGB]: "channel",
-				},
-				description: "Канал, в который отправляются уведомления (текущий если не указано)",
-				channelTypes: [
-					ChannelType.GuildText,
-					ChannelType.GuildVoice,
-					ChannelType.PublicThread,
-					ChannelType.PrivateThread,
-					ChannelType.GuildStageVoice,
-					ChannelType.GuildAnnouncement,
-					ChannelType.AnnouncementThread,
-				],
 			},
 		],
 	},
@@ -88,12 +62,10 @@ module.exports = new Subcommand({
 		if (urlType === "forums") linkType = $Enums.LinkType.FORUM;
 		else linkType = $Enums.LinkType.THREAD;
 
-		const channelId = interaction.options.getChannel("канал")?.id ?? interaction.channelId;
-
 		return subscriptions
 			.delete({
 				targetId_linkType_linkId: {
-					targetId: channelId,
+					targetId: interaction.channelId,
 					linkType: linkType,
 					linkId: +id,
 				},
@@ -127,7 +99,7 @@ module.exports = new Subcommand({
 
 				return interaction.reply({
 					content:
-						`Вы отписали канал ${channelMention(channelId)} от обновлений ${typeString} ` +
+						`Вы отписали канал ${channelMention(interaction.channelId)} от обновлений ${typeString} ` +
 						bold(title ? hyperlink(title, url.toString()) : url.toString()),
 					flags: MessageFlags.Ephemeral,
 				});
@@ -136,7 +108,7 @@ module.exports = new Subcommand({
 				if (err instanceof PrismaClientKnownRequestError && err.code === "P2025")
 					return interaction.reply({
 						content:
-							`Данная подписка в канале ${channelMention(channelId)} ` +
+							`Данная подписка в канале ${channelMention(interaction.channelId)} ` +
 							"уже отсутствует, вам не будут присылаться обновления",
 						flags: MessageFlags.Ephemeral,
 					});
