@@ -36,7 +36,11 @@ module.exports = new CronJob(
 
 				if (!newThreads.length) return;
 
-				const links = await getLinks({ type: $Enums.LinkType.THREAD });
+				const date = new Date(+new Date() - 86_400e3 * 3);
+				const links = await getLinks({
+					type: $Enums.LinkType.THREAD,
+					subscriptions: { some: { OR: [{ createdAt: { gte: date } }, { guildId: { not: null } }] } },
+				 });
 				const threadsToNotify = newThreads.filter((thread) => links.some(({ id }) => thread.thread_id === id));
 
 				if (threadsToNotify.length) {
@@ -65,7 +69,7 @@ module.exports = new CronJob(
 							links
 								.filter(({ id }) => post.thread_id === id)
 								.flatMap(({ subscriptions }) =>
-									subscriptions.map((subscription) => {
+									subscriptions.filter(({ createdAt }) => +createdAt >= +date).map((subscription) => {
 										const thread = threadsData.find(({ thread_id }) => thread_id === subscription.linkId);
 										const container = new ContainerBuilder()
 											.setAccentColor(0xffffff)

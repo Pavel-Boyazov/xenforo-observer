@@ -37,7 +37,11 @@ module.exports = new CronJob(
 
 				if (!newThreads.length) return;
 
-				const links = await getLinks({ type: $Enums.LinkType.FORUM });
+				const date = new Date(+new Date() - 86_400e3 * 3);
+				const links = await getLinks({
+					type: $Enums.LinkType.FORUM,
+					subscriptions: { some: { OR: [{ createdAt: { gte: date } }, { guildId: { not: null } }] } },
+				});
 				const threadsToNotify = newThreads.filter((thread) => links.some(({ id }) => thread.node_id === id));
 
 				if (threadsToNotify.length) {
@@ -55,8 +59,8 @@ module.exports = new CronJob(
 
 									return subscriptions
 										.filter(
-											({ filterPrefixesIds }) =>
-												!filterPrefixesIds?.length ||
+											({ filterPrefixesIds, createdAt }) =>
+												(+createdAt >= +date && !filterPrefixesIds?.length) ||
 												(thread.sv_prefix_ids.length &&
 													filterPrefixesIds.every((prefixId) => thread.sv_prefix_ids.includes(prefixId))),
 										)
