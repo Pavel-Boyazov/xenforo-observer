@@ -1,4 +1,4 @@
-const { Locale, PermissionFlagsBits, InteractionContextType } = require("discord.js");
+const { Locale, PermissionFlagsBits, InteractionContextType, ApplicationIntegrationType } = require("discord.js");
 
 const ChatInputCommand = require("../../classes/ChatInputCommand");
 
@@ -11,6 +11,7 @@ module.exports = new ChatInputCommand({
 		},
 		description: "Управление подписками сервера",
 		contexts: [InteractionContextType.Guild],
+		integrationTypes: [ApplicationIntegrationType.GuildInstall],
 		defaultMemberPermissions: PermissionFlagsBits.Administrator,
 	},
 });
