@@ -51,8 +51,8 @@ module.exports = new CronJob(
 									.get(`/threads/${thread.thread_id}/posts`, { params: { page } })
 									.then(({ data }) =>
 										data.posts.filter(
-											({ post_id, message_state }) =>
-												post_id > (idData?.lastPostId ?? 0) && message_state === "visible",
+											({ post_id, message_state, user_id }) =>
+												post_id > (idData?.lastPostId ?? 0) && message_state === "visible" && user_id !== +process.env.FORUM_USER_ID,
 										),
 									);
 							});
