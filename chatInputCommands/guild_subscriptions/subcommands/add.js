@@ -13,6 +13,7 @@ const {
 	StringSelectMenuBuilder,
 	RoleSelectMenuBuilder,
 	TextDisplayBuilder,
+	PermissionFlagsBits,
 	channelMention,
 } = require("discord.js");
 
@@ -44,6 +45,23 @@ module.exports = new Subcommand({
 		],
 	},
 	async execute(interaction) {
+		if (!interaction.appPermissions.has(PermissionFlagsBits.ViewChannel))
+			return interaction.reply({
+				content: "Выдайте боту право на просмотр текущего канала",
+				flags: MessageFlags.Ephemeral,
+			});
+		else if (
+			interaction.channel.isThread()
+				? interaction.appPermissions.has(PermissionFlagsBits.SendMessagesInThreads)
+				: interaction.appPermissions.has(PermissionFlagsBits.SendMessages)
+		)
+			return interaction.reply({
+				content:
+					`Боту нужно право ${interaction.channel.isThread() ? "отправки сообщений в ветках" : "отправки сообщений"} ` +
+					"для отправки уведомлений в данный канал",
+				flags: MessageFlags.Ephemeral,
+			});
+
 		let url;
 		try {
 			url = new URL(interaction.options.getString("ссылка", true));
