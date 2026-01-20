@@ -71,7 +71,6 @@ module.exports = function bbToMarkdown(string, maxLength = 1e3) {
 
 					case "url":
 					case "link": {
-						console.log(node.attrs);
 						const url = node.attrs[Object.keys(node.attrs)[0]];
 
 						if (!url) return content;

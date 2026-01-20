@@ -34,13 +34,11 @@ module.exports = new CronJob(
 					? threadsData.filter(({ last_post_id: lastPostId }) => lastPostId > idData.lastPostId)
 					: threadsData;
 
-				console.log(1, newThreads, idData);
 				if (!newThreads.length) return;
 
 				const links = await getLinks({ type: $Enums.LinkType.THREAD });
 				const threadsToNotify = newThreads.filter((thread) => links.some(({ id }) => thread.thread_id === id));
 
-				console.log(2, threadsToNotify);
 				if (threadsToNotify.length) {
 					const postsToNotify = await Promise.all(
 						...threadsToNotify.map((thread) => {
@@ -61,7 +59,6 @@ module.exports = new CronJob(
 						}),
 					).then((response) => response.flat());
 					const client = this.client;
-					console.log(3, postsToNotify);
 
 					await Promise.all([
 						...postsToNotify.flatMap((post) =>
