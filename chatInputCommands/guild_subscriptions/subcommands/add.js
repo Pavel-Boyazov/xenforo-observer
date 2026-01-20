@@ -51,9 +51,9 @@ module.exports = new Subcommand({
 				flags: MessageFlags.Ephemeral,
 			});
 		else if (
-			interaction.channel.isThread()
+			!(interaction.channel.isThread()
 				? interaction.appPermissions.has(PermissionFlagsBits.SendMessagesInThreads)
-				: interaction.appPermissions.has(PermissionFlagsBits.SendMessages)
+				: interaction.appPermissions.has(PermissionFlagsBits.SendMessages))
 		)
 			return interaction.reply({
 				content:
