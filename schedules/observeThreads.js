@@ -61,7 +61,7 @@ module.exports = new CronJob(
 										.filter(
 											({ filterPrefixesIds, createdAt }) =>
 												(+createdAt >= +date && !filterPrefixesIds?.length) ||
-												(thread.sv_prefix_ids.length &&
+												(thread.sv_prefix_ids?.length &&
 													filterPrefixesIds.every((prefixId) => thread.sv_prefix_ids.includes(prefixId))),
 										)
 										.map((subscription) => {
