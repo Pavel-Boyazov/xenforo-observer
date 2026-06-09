@@ -71,6 +71,7 @@ module.exports = new CronJob(
 													content: heading(
 														`На форуме ${bold(hyperlink(thread.Forum.title, thread.Forum.view_url))} ` +
 															"создана новая тема!",
+														HeadingLevel.Two,
 													),
 												})
 												.addSeparatorComponents(new SeparatorBuilder())

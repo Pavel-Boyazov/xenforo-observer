@@ -16,6 +16,7 @@ const {
 	ButtonBuilder,
 	ButtonStyle,
 	ActionRowBuilder,
+	HeadingLevel,
 } = require("discord.js");
 
 const { lastIds, getLinks } = require("../mfunc");
@@ -81,6 +82,7 @@ module.exports = new CronJob(
 													content: heading(
 														`В теме ${bold(hyperlink(thread.title, thread.view_url))} ` +
 															`новое ${bold(hyperlink("сообщение", post.view_url))}!`,
+														HeadingLevel.Two,
 													),
 												})
 												.addSeparatorComponents(new SeparatorBuilder());
