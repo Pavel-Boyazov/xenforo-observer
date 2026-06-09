@@ -128,5 +128,6 @@ module.exports = function bbToMarkdown(string, maxLength = 1e3) {
 
 			return process(ast);
 		})
-		.join("");
+		.join("")
+		.replace(/\*{4}/g, "");
 };
