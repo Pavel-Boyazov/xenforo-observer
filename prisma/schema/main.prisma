@@ -16,8 +16,10 @@ model IdData {
 }
 
 model AccessOverwrite {
-  guildId          String         @id @map("guild_id") @db.VarChar(20)
-  allowedForumsIds Json           @map("allowed_forums_ids")
+  guildId          String @id @map("guild_id") @db.VarChar(20)
+  allowedForumsIds Json   @map("allowed_forums_ids")
+
+  subscriptions Subscription[]
 
   @@map("access_overwrites")
 }

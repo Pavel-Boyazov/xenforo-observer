@@ -18,7 +18,7 @@ const {
 } = require("discord.js");
 
 const Subcommand = require("../../../classes/Subcommand");
-const { checkAccess, subscriptions } = require("../../../mfunc");
+const { subscriptions } = require("../../../mfunc");
 const { $Enums } = require("../../../prisma/generated");
 const { rssInstance, apiInstance, urlRegex } = require("../../../utils");
 
@@ -145,30 +145,12 @@ module.exports = new Subcommand({
 			});
 		}
 
-		if (isProtected)
-			try {
-				await checkAccess(interaction.guildId, forumId);
-			} catch (error) {
-				if (error instanceof PrismaClientKnownRequestError && error.code === "P2025")
-					return interaction.reply({
-						content: "Данная ссылка находится под защитой, вы не можете подписаться на её обновления",
-						flags: MessageFlags.Ephemeral,
-					});
-
-				console.error(error);
-
-				return interaction.reply({
-					content: "При проверке доступа произошла неизвестная ошибка. Повторите попытку позже",
-					flags: MessageFlags.Ephemeral,
-				});
-			}
-
 		const linkUnique = { type_id: { type, id: +id } };
 
 		return subscriptions
 			.create({
 				targetId: interaction.channelId,
-				guildId: interaction.guildId,
+				accessOverwrite: { connect: { guildId: interaction.guildId, allowedForumsIds: isProtected ? { array_contains: forumId } : undefined } },
 				link: { connectOrCreate: { where: linkUnique, create: { type, id: +id } } },
 				filterPostId: postId,
 				logs: {
@@ -245,6 +227,11 @@ module.exports = new Subcommand({
 				if (err instanceof PrismaClientKnownRequestError && err.code === "P2002")
 					return interaction.reply({
 						content: "У вас уже имеется подписка на данные обновления",
+						flags: MessageFlags.Ephemeral,
+					});
+				else if (err instanceof PrismaClientKnownRequestError && err.code === "P2025")
+					return interaction.reply({
+						content: "Данная ссылка находится под защитой, вы не можете подписаться на её обновления",
 						flags: MessageFlags.Ephemeral,
 					});
 
