@@ -73,7 +73,6 @@ module.exports = new CronJob(
 								.filter(({ id }) => post.thread_id === id)
 								.flatMap(({ subscriptions }) =>
 									subscriptions
-										.filter(({ createdAt }) => +createdAt >= +date)
 										.map((subscription) => {
 											const thread = threadsData.find(({ thread_id }) => thread_id === subscription.linkId);
 											const container = new ContainerBuilder()
