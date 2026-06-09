@@ -150,7 +150,12 @@ module.exports = new Subcommand({
 		return subscriptions
 			.create({
 				targetId: interaction.channelId,
-				accessOverwrite: { connect: { guildId: interaction.guildId, allowedForumsIds: isProtected ? { array_contains: forumId } : undefined } },
+				accessOverwrite: {
+					connect: {
+						guildId: interaction.guildId,
+						allowedForumsIds: isProtected ? { array_contains: forumId } : undefined,
+					},
+				},
 				link: { connectOrCreate: { where: linkUnique, create: { type, id: +id } } },
 				filterPostId: postId,
 				logs: {

@@ -72,86 +72,85 @@ module.exports = new CronJob(
 							links
 								.filter(({ id }) => post.thread_id === id)
 								.flatMap(({ subscriptions }) =>
-									subscriptions
-										.map((subscription) => {
-											const thread = threadsData.find(({ thread_id }) => thread_id === subscription.linkId);
-											const container = new ContainerBuilder()
-												.setAccentColor(0xffffff)
-												.addTextDisplayComponents({
-													content: heading(
-														`В теме ${bold(hyperlink(thread.title, thread.view_url))} ` +
-															`новое ${bold(hyperlink("сообщение", post.view_url))}!`,
-														HeadingLevel.Two,
-													),
-												})
-												.addSeparatorComponents(new SeparatorBuilder());
+									subscriptions.map((subscription) => {
+										const thread = threadsData.find(({ thread_id }) => thread_id === subscription.linkId);
+										const container = new ContainerBuilder()
+											.setAccentColor(0xffffff)
+											.addTextDisplayComponents({
+												content: heading(
+													`В теме ${bold(hyperlink(thread.title, thread.view_url))} ` +
+														`новое ${bold(hyperlink("сообщение", post.view_url))}!`,
+													HeadingLevel.Two,
+												),
+											})
+											.addSeparatorComponents(new SeparatorBuilder());
 
-											if (post.User.avatar_urls.l)
-												container.addSectionComponents(
-													new SectionBuilder()
-														.setThumbnailAccessory(
-															new ThumbnailBuilder({
-																media: { url: post.User.avatar_urls.l },
-																description: "Аватар автора",
-															}),
-														)
-														.addTextDisplayComponents(
-															new TextDisplayBuilder({ content: bbToMarkdown(post.message, 1e3) }),
-														),
-												);
-											else container.addTextDisplayComponents({ content: bbToMarkdown(post.message, 1e3) });
-
-											container.addSeparatorComponents(new SeparatorBuilder()).addTextDisplayComponents({
-												content: `Автор: ${bold(hyperlink(post.User.username, post.User.view_url))}`,
-											});
-
-											if (subscription.guildId && subscription.moderatorRolesIds?.length)
-												container.addSeparatorComponents(new SeparatorBuilder()).addActionRowComponents(
-													new ActionRowBuilder({
-														components: [
-															new ButtonBuilder({
-																customId: `markAsInProcess:${subscription.id}`,
-																emoji: "⏰",
-																style: ButtonStyle.Primary,
-																label: "Пометить как в обработке",
-															}),
-															new ButtonBuilder({
-																customId: `moderate:${subscription.id}:${post.post_id}`,
-																emoji: "✍️",
-																style: ButtonStyle.Success,
-																label: "Обработать",
-															}),
-														],
-													}),
-												);
-
-											return subscription.guildId
-												? client.channels.fetch(subscription.targetId, { allowUnknownGuild: true }).then(
-														/** @param {GuildTextBasedChannel} channel Канал для отправки уведомления */
-														(channel) =>
-															channel.send({
-																components: [container],
-																flags: MessageFlags.IsComponentsV2,
-																allowedMentions: { parse: [] },
-															}),
+										if (post.User.avatar_urls.l)
+											container.addSectionComponents(
+												new SectionBuilder()
+													.setThumbnailAccessory(
+														new ThumbnailBuilder({
+															media: { url: post.User.avatar_urls.l },
+															description: "Аватар автора",
+														}),
 													)
-												: client.users.send(subscription.targetId, {
-														components: [
-															container.addSeparatorComponents(new SeparatorBuilder()).addActionRowComponents({
-																components: [
-																	new ButtonBuilder({
-																		label: "Отписаться",
-																		emoji: "🔕",
-																		customId: `unsubscribe:${subscription.id}`,
-																		style: ButtonStyle.Danger,
-																	}),
-																],
-															}),
-														],
-														flags: MessageFlags.IsComponentsV2,
-														allowedMentions: { parse: [] },
-													});
-										}),
+													.addTextDisplayComponents(
+														new TextDisplayBuilder({ content: bbToMarkdown(post.message, 1e3) }),
+													),
+											);
+										else container.addTextDisplayComponents({ content: bbToMarkdown(post.message, 1e3) });
+
+										container.addSeparatorComponents(new SeparatorBuilder()).addTextDisplayComponents({
+											content: `Автор: ${bold(hyperlink(post.User.username, post.User.view_url))}`,
+										});
+
+										if (subscription.guildId && subscription.moderatorRolesIds?.length)
+											container.addSeparatorComponents(new SeparatorBuilder()).addActionRowComponents(
+												new ActionRowBuilder({
+													components: [
+														new ButtonBuilder({
+															customId: `markAsInProcess:${subscription.id}`,
+															emoji: "⏰",
+															style: ButtonStyle.Primary,
+															label: "Пометить как в обработке",
+														}),
+														new ButtonBuilder({
+															customId: `moderate:${subscription.id}:${post.post_id}`,
+															emoji: "✍️",
+															style: ButtonStyle.Success,
+															label: "Обработать",
+														}),
+													],
+												}),
+											);
+
+										return subscription.guildId
+											? client.channels.fetch(subscription.targetId, { allowUnknownGuild: true }).then(
+													/** @param {GuildTextBasedChannel} channel Канал для отправки уведомления */
+													(channel) =>
+														channel.send({
+															components: [container],
+															flags: MessageFlags.IsComponentsV2,
+															allowedMentions: { parse: [] },
+														}),
+												)
+											: client.users.send(subscription.targetId, {
+													components: [
+														container.addSeparatorComponents(new SeparatorBuilder()).addActionRowComponents({
+															components: [
+																new ButtonBuilder({
+																	label: "Отписаться",
+																	emoji: "🔕",
+																	customId: `unsubscribe:${subscription.id}`,
+																	style: ButtonStyle.Danger,
+																}),
+															],
+														}),
+													],
+													flags: MessageFlags.IsComponentsV2,
+													allowedMentions: { parse: [] },
+												});
+									}),
 								),
 						),
 					]);
